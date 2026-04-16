@@ -5,6 +5,6 @@ set PROJECT_X_ACCOUNT_NAME=50KTC-V2-261997-32429469
 
 cd /d "%~dp0nq-signal-copier-master"
 
-python copier_bot.py --tg-token "8287773664:AAF-X2yI7s4-6TCihF2QJV1eOmFMY62VO34" --tg-chat "-5132748957" --tg-key "Noisewonderful" --symbol NQ --qty 1
+python copier_bot.py --ntfy-topic "nqsig-dbcced6e93549dc8" --tg-key "Noisewonderful" --symbol NQ --qty 1
 
 pause
