@@ -100,10 +100,12 @@ class SignalCopier:
         import time as _time
         self.last_poll_time = int(_time.time())
 
+        self._poll_interval = 5  # seconds between ntfy polls (avoid 429 rate limit)
+
         try:
             while self.running:
                 await self._poll_signals()
-                await asyncio.sleep(1)
+                await asyncio.sleep(self._poll_interval)
         except asyncio.CancelledError:
             pass
         finally:
@@ -135,7 +137,12 @@ class SignalCopier:
                     continue
 
         except Exception as e:
-            if "timed out" not in str(e).lower():
+            err_str = str(e).lower()
+            if "429" in str(e):
+                # Rate limited - back off
+                self._poll_interval = min(self._poll_interval + 5, 30)
+                print(f"[COPIER] Rate limited, slowing to {self._poll_interval}s polling")
+            elif "timed out" not in err_str:
                 print(f"[COPIER] Poll error: {e}")
 
     async def _process_signal(self, signal_text: str):
